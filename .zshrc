@@ -1,27 +1,29 @@
-
 export ZSH="$HOME/.oh-my-zsh"
-CASE_SENSITIVE="true"
+ZSH_THEME="spaceship"
 
-eval "$(fnm env --use-on-cd --shell zsh)"
-
-plugins=(  
+# Plugins (must be defined BEFORE sourcing oh-my-zsh.sh)
+plugins=(
   git
-  kubectl
-  argocd
-  fnm
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  colored-man-pages
+  python
+  npm
+  docker
+  conda
 )
 
 source $ZSH/oh-my-zsh.sh
 
-source /opt/homebrew/opt/spaceship/spaceship.zsh
-# Custom Aliases
+# Aliases
 alias cls="clear"
+alias pip='python -m pip'  # Forzar uso del pip correcto
 
+# <<< ARGOCD >>>
 argocd_login() {
   local HOST="localhost:8080"
   local USER="admin"
   local PASS=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-
   echo "🔐 Logging into ArgoCD at $HOST as $USER"
   argocd login "$HOST" \
     --username "$USER" \
@@ -29,3 +31,33 @@ argocd_login() {
     --grpc-web \
     --insecure
 }
+# <<< ARGOCD >>>
+
+# >>> conda initialize >>> 
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="$HOME/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <
+
+# fnm (Node Version Manager) - DESPUÉS de conda
+if [ -d "/opt/homebrew/opt/fnm/bin" ]; then
+  export PATH="/opt/homebrew/opt/fnm/bin:$PATH"
+  eval "$(fnm env --use-on-cd)"
+fi
+
+# bun - DESPUÉS de conda y fnm
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# SSH key
+ssh-add ~/.ssh/id_ed25519_git 2>/dev/null
