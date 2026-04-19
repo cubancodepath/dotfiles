@@ -19,19 +19,7 @@ source $ZSH/oh-my-zsh.sh
 alias cls="clear"
 alias pip='python -m pip'  # Forzar uso del pip correcto
 
-# <<< ARGOCD >>>
-argocd_login() {
-  local HOST="localhost:8080"
-  local USER="admin"
-  local PASS=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-  echo "🔐 Logging into ArgoCD at $HOST as $USER"
-  argocd login "$HOST" \
-    --username "$USER" \
-    --password "$PASS" \
-    --grpc-web \
-    --insecure
-}
-# <<< ARGOCD >>>
+
 
 # >>> conda initialize >>> 
 # !! Contents within this block are managed by 'conda init' !!

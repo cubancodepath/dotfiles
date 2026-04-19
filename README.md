@@ -1,0 +1,1 @@
+This repo contains the `dotfiles` that I use to configure my development environment also a list the application that I use un my day to day as a software Engineer. All this configurations are for a MacOs system
